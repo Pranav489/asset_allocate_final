@@ -20,8 +20,8 @@ const BlogDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_BASE_URL = "http://localhost:8000/api";
-  const STORAGE_URL = "http://localhost:8000/uploads";
+  const API_BASE_URL = "http://127.0.0.1:8000/api";
+  const STORAGE_URL = "http://127.0.0.1:8000/uploads";
 
   useEffect(() => {
     const fetchData = async () => {
