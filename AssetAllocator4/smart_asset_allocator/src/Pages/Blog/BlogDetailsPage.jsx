@@ -20,8 +20,8 @@ const BlogDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_BASE_URL = "http://127.0.0.1:8000/api";
-  const STORAGE_URL = "http://127.0.0.1:8000/uploads";
+  const API_BASE_URL = "https://asset.demovoting.com/api";
+  const STORAGE_URL = "https://asset.demovoting.com/uploads";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,6 +30,7 @@ const BlogDetailsPage = () => {
           axios.get(`${API_BASE_URL}/blog/${slug}`),
           axios.get(`${API_BASE_URL}/blog/recent`),
         ]);
+        console.log(postRes.data);
         setBlog(postRes.data.post);
         setRecentPosts(recentRes.data.filter((post) => post.slug !== slug));
       } catch (err) {
@@ -42,13 +43,16 @@ const BlogDetailsPage = () => {
     fetchData();
   }, [slug]);
 
+  // Process content with image URL correction and sanitization
   const processedContent = useMemo(() => {
     if (!blog?.content) return "";
 
+    // Fix relative image paths
     let fixedContent = blog.content.replace(/src="([^"]*)"/g, (match, src) =>
-      src.startsWith("http") ? match : `src="${STORAGE_URL}/${src}"`
+      src.startsWith("http") ? match : (src = `${STORAGE_URL}/${src}`)
     );
 
+    // Sanitize HTML
     return DOMPurify.sanitize(fixedContent, {
       ALLOWED_TAGS: [
         "h1",
@@ -146,11 +150,13 @@ const BlogDetailsPage = () => {
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-20"
     >
       <div className="flex flex-col lg:flex-row gap-8">
+        {/* Main Content */}
         <motion.div
           variants={fadeIn("right", "spring", 0.2, 1)}
           className="lg:w-2/3"
         >
           <article className="bg-white rounded-lg shadow-md overflow-hidden">
+            {/* Featured Image */}
             <img
               src={`${STORAGE_URL}/${blog.image_url}`}
               alt={blog.title}
@@ -171,9 +177,11 @@ const BlogDetailsPage = () => {
                 role={blog.author_role}
               />
 
+              {/* Rich Editor Content */}
+              {/* Article Content */}
               <div
                 className="prose max-w-none"
-                dangerouslySetInnerHTML={{ __html: processedContent }}
+                dangerouslySetInnerHTML={{ __html: blog.content }}
               ></div>
 
               {blog.related_products?.length > 0 && (
@@ -192,11 +200,20 @@ const BlogDetailsPage = () => {
           <CommentsSection />
         </motion.div>
 
+        {/* Sidebar */}
         <BlogSidebar recentPosts={recentPosts} storageUrl={STORAGE_URL} />
       </div>
     </motion.div>
   );
 };
+
+// Extracted Components
+
+const LoadingSpinner = () => (
+  <div className="flex justify-center items-center h-64">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+  </div>
+);
 
 const ErrorDisplay = ({ message }) => (
   <div className="text-center py-12 text-red-500">
