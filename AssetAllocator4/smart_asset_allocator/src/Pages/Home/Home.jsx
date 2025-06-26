@@ -14,6 +14,7 @@ import FAQSection from "./FAQSection";
 import Blogs from "./Blogs";
 import OurCorporateServices from "./OurCorporateServices";
 import WhyUs from "./WhyUs";
+import AwardSection from "./AwardSection";
 
 import DepartmentSection from "./Process";
 import ReviewsSection from "../Home/ReviewSection";
@@ -25,6 +26,7 @@ const Home = () => {
       <OurServices />
        <WhyUs />
      <OurCorporateServices />
+     <AwardSection/>
       <FAQSection />
  
      

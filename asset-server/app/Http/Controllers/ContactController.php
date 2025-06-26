@@ -45,4 +45,24 @@ class ContactController extends Controller
             ], 500);
         }
     }
-};
+
+    /**
+     * Returns an empty contact structure
+     * 
+     * @return array
+     */
+    protected function emptyContactStructure()
+    {
+        return [
+            'companyName' => null,
+            'tagline' => null,
+            'phoneNumbers' => [],
+            'emails' => [],
+            'whatsappNumber' => null,
+            'workingHours' => [],
+            'appointmentInfo' => null,
+            'address' => null,
+            'socialLinks' => [],
+        ];
+    }
+}
