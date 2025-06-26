@@ -9,7 +9,7 @@ const ReviewsPage = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/reviews');
+        const response = await axios.get('https://asset.demovoting.com/api/reviews');
         setReviews(response.data);
         setLoading(false);
       } catch (err) {
@@ -44,135 +44,75 @@ const ReviewsPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Customer Reviews</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {reviews.map((review) => (
-          <ReviewCard key={review.video_url} review={review} />
-        ))}
+    <section className="max-container bg-blue-50 py-24 w-full text-gray-700">
+      <h3 className="font-palanquin text-center text-2xl md:text-4xl font-bold">
+        What Our
+        <span className="m-2 bg-gradient-to-r from-orange-500 to-orange-800 text-transparent bg-clip-text">
+          Customers
+        </span>
+        Say??
+      </h3>
+      <p className="info-text text-md md:text-lg text-center m-auto mt-4 max-w-lg">
+        Hear genuine stories from our satisfied customers about their
+        exceptional experiences with us.
+      </p>
+
+      {/* Grid Layout for Testimonials */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 px-6">
+        {reviews.length === 0 ? (
+          <div className="col-span-full text-center py-10">
+            <p className="text-gray-500">No reviews available yet.</p>
+          </div>
+        ) : (
+          reviews.map((review) => (
+            <ReviewCard key={review.id} review={review} />
+          ))
+        )}
       </div>
-    </div>
+    </section>
   );
 };
 
 const ReviewCard = ({ review }) => {
-  const [showVideo, setShowVideo] = useState(false);
-
-  // Generate avatar from name
-  const getAvatarUrl = (name) => {
-    const initials = name
-      .split(' ')
-      .map(part => part[0])
-      .join('')
-      .toUpperCase();
-    
-    return `https://ui-avatars.com/api/?name=${initials}&background=random&size=128`;
+  // Get full video URL
+  const getVideoUrl = () => {
+    if (!review.video_url) return null;
+    // Assuming your videos are stored in the 'storage' directory
+    return `http://asset.demovoting.com/uploads/${review.video_url}`;
   };
 
+  const videoUrl = getVideoUrl();
+
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-      {/* Video thumbnail with play button */}
-      <div 
-        className="relative cursor-pointer group"
-        onClick={() => setShowVideo(true)}
-      >
-        <div className="bg-gray-200 border-2 border-dashed rounded-t-xl w-full h-48 flex items-center justify-center">
-          <div className="bg-gray-100 border-2 border-dashed rounded-xl w-16 h-16" />
+    <div className="bg-white rounded-2xl shadow-lg p-4 text-center">
+      {videoUrl ? (
+        <video
+          src={videoUrl}
+          controls
+          className="w-full h-60 rounded-lg object-cover"
+        />
+      ) : (
+        <div className="w-full h-60 bg-gray-200 rounded-lg flex items-center justify-center">
+          <p className="text-gray-500">No video available</p>
         </div>
-        
-        <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="bg-blue-500 text-white rounded-full p-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+      )}
+      <h4 className="font-semibold text-lg mt-3 text-gray-900">
+        {review.customer_name}
+      </h4>
+      <p className="text-sm text-gray-600 mt-1">{review.review}</p>
+      {review.rating && (
+        <div className="flex justify-center mt-2">
+          {[...Array(5)].map((_, i) => (
+            <svg 
+              key={i}
+              xmlns="http://www.w3.org/2000/svg" 
+              className={`h-5 w-5 ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`}
+              viewBox="0 0 20 20" 
+              fill="currentColor"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
-          </div>
-        </div>
-      </div>
-
-      {/* Review content */}
-      <div className="p-6">
-        <div className="flex items-center mb-4">
-          <img
-            src={getAvatarUrl(review.customer_name)}
-            alt={review.customer_name}
-            className="w-12 h-12 rounded-full object-cover mr-4"
-          />
-          <div>
-            <h3 className="font-bold text-lg">{review.customer_name}</h3>
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <svg 
-                  key={i}
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className={`h-5 w-5 ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`}
-                  viewBox="0 0 20 20" 
-                  fill="currentColor"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-              <span className="ml-2 text-gray-600">({review.rating})</span>
-            </div>
-          </div>
-        </div>
-
-        <p className="text-gray-700 italic mb-4">"{review.review}"</p>
-        
-        <button 
-          onClick={() => setShowVideo(true)}
-          className="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-        >
-          Watch Video
-        </button>
-      </div>
-
-      {/* Video Modal */}
-      {showVideo && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg overflow-hidden w-full max-w-2xl">
-            <div className="p-4 flex justify-between items-center border-b">
-              <h3 className="font-bold">{review.customer_name}'s Review</h3>
-              <button 
-                onClick={() => setShowVideo(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            
-            <div className="p-4">
-              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-64 flex items-center justify-center">
-                <div className="bg-gray-100 border-2 border-dashed rounded-xl w-16 h-16" />
-              </div>
-              
-              <div className="mt-4 flex items-center justify-center">
-                <div className="bg-gray-200 rounded-full p-3 mx-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </div>
-                
-                <div className="bg-blue-500 text-white rounded-full p-4 mx-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                
-                <div className="bg-gray-200 rounded-full p-3 mx-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
-              
-              <p className="text-center mt-4 text-sm text-gray-500">
-                Video placeholder for: {review.video_url}
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
       )}
     </div>

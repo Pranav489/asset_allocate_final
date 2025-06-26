@@ -242,7 +242,7 @@ export default function FAQSection() {
                       transition={{ duration: 0.3 }}
                       className="mt-2 p-4 rounded-lg bg-gray-50 border-l-4 border-orange-500 shadow-md text-left"
                     >
-                      <p className="text-gray-600">{item.answer}</p>
+                      <div className="text-gray-600" dangerouslySetInnerHTML={{ __html: item.answer }} />
                     </motion.div>
                   )}
                 </motion.div>

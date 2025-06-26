@@ -21,6 +21,7 @@ use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ProductFaqController;
 use App\Http\Controllers\InsuranceSolutionController;
+use App\Http\Controllers\InsuranceController;
 
 
 Route::get('/', function () {
@@ -52,6 +53,7 @@ Route::get('/api/reviews', [ReviewController::class, 'index']);
 Route::get('/api/faqs', [FaqController::class, 'index']);
 Route::get('/api/productfaq', [productFaqController::class, 'index']); 
 Route::get('/api/insurance-solutions', [InsuranceSolutionController::class, 'index']);
+Route::get('/api/insurance-types', [InsuranceController::class, 'index']);
 
 
 
